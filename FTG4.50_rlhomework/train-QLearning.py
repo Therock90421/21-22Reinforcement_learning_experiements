@@ -1,9 +1,3 @@
-'''
-2020/5/31
-Tong Ru
-train —— traditional Q-learning
-'''
-
 import random
 import numpy as np
 from fightingice_env import FightingiceEnv
@@ -38,27 +32,22 @@ if __name__ == '__main__':
     alpha=0.01
     epsilon=0.1
     weight=np.zeros((40,144))
-    weight = loadweight("./trainedWeight/w1686-QL")
+    weight = loadweight("./trainLog/QLtrainLog/weight_best")
 
     n=0
     p=0
     RewardData=[]
-    N=500#训练次数
+    N=500
     NumWin=0
     Best_Score = 0
     abs_score = 0
 
-
     act = random.randint(0, 39)#初始动作
-
-    A=np.zeros((40,144*40))
-    for i in range(0,40):
-        A[i,i*144:(i+1)*144]=1
 
     while True:
         obs = env.reset(env_args=env_args)
         reward, done, info = 0, False, None
-        n=n+1#局数+1
+        n=n+1
         r=0
 
         while not done:
@@ -84,34 +73,17 @@ if __name__ == '__main__':
 
             # TODO: or you can design with your RL algorithm to choose action [act] according to game state [obs]
             # new_obs, reward, done, info = env.step(act)
-            '''
-            X=np.tile(obs,(40,40))
-            X=X*A
-            X=X / np.array([X.max(axis=1)]).T
-            act=np.argmax(np.dot(X,weight))
-            '''
             act = np.argmax(np.dot(weight, obs))
             if random.random()<epsilon:
                 act = random.randint(0, 39)
             else:
                 pass
-            '''
-            x=np.zeros((1,144*40))
-            x[0,144*act:144*(act+1)]=np.array([obs])
-            '''
             new_obs, reward, done, info = env.step(act)
 
             if not done:
                 # TODO: (main part) learn with data (obs, act, reward, new_obs)
-                '''
-                X=np.tile(new_obs,(40,40))
-                X=X*A
-                X=X / np.array([X.max(axis=1)]).T
-                '''
                 delta=reward + gamma * np.max(np.dot(weight,new_obs))-np.dot(obs,weight[act])
-                #weight=weight+ alpha*delta[0]* x.T
                 weight[act] = weight[act] + alpha*delta*obs
-
                 obs=new_obs
                 r=r+reward
 

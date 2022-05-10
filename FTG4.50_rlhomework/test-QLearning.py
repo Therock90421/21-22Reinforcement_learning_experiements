@@ -1,8 +1,3 @@
-'''
-2020/5/31
-Tong Ru
-test —— traditional Q-learning
-'''
 import random
 import numpy as np
 from fightingice_env import FightingiceEnv
