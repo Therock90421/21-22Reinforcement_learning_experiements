@@ -31,7 +31,6 @@ if __name__ == '__main__':
     # alpha=0.1
     alpha=0.01
     epsilon=0.1
-    weight=np.zeros((40,144))
     weight1 = loadweight("./trainLog/DoubleQLtrainLog/weight1_best")
     weight2 = loadweight("./trainLog/DoubleQLtrainLog/weight2_best")
 
@@ -92,13 +91,13 @@ if __name__ == '__main__':
                 # TODO: (main part) learn with data (obs, act, reward, new_obs)
                 if random.random() < 0.5:
                     #更新Q1
-                    Q2_act = np.argmax(np.dot(weight2, new_obs))
-                    delta = reward + gamma * np.dot(new_obs, weight1[Q2_act]) - np.dot(obs, weight1[act])
+                    Q1_act = np.argmax(np.dot(weight1, new_obs))
+                    delta = reward + gamma * np.dot(new_obs, weight2[Q1_act]) - np.dot(obs, weight1[act])
                     weight1[act] = weight1[act] + alpha * delta * obs
                 else:
                     #更新Q2
-                    Q1_act = np.argmax(np.dot(weight1, new_obs))
-                    delta = reward + gamma * np.dot(new_obs, weight2[Q1_act]) - np.dot(obs, weight2[act])
+                    Q2_act = np.argmax(np.dot(weight2, new_obs))
+                    delta = reward + gamma * np.dot(new_obs, weight1[Q2_act]) - np.dot(obs, weight2[act])
                     weight2[act] = weight2[act] + alpha * delta * obs
 
                 obs = new_obs
